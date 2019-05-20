@@ -8,6 +8,7 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Http\Requests\PostRequest;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Cache;
 
 class PostController extends Controller
 {
@@ -130,6 +131,8 @@ class PostController extends Controller
             return redirect('/admin/posts');
         }
 
+        Cache::put('new-post', 1);
+
         $post->delete();
         flash()->overlay('Post deleted successfully.');
 
@@ -141,6 +144,8 @@ class PostController extends Controller
         $post->is_published = !$post->is_published;
         $post->save();
         flash()->overlay('Post changed successfully.');
+
+        Cache::put('new-post', 1);
 
         return redirect('/admin/posts');
     }

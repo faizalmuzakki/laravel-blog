@@ -56,7 +56,7 @@ class Post extends Model
 
     public function scopePublished($query)
     {
-        return $query->where('is_published', true);
+        return $query->where('is_published', true)->latest();
     }
 
     public function scopeDrafted($query)

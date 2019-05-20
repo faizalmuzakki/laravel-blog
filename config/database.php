@@ -50,7 +50,7 @@ return [
             'collation' => 'utf8mb4_unicode_ci',
             'prefix' => '',
             'strict' => true,
-            'engine' => null,
+            'engine' => 'NDB',
         ],
 
         'pgsql' => [
@@ -94,13 +94,20 @@ return [
 
     'redis' => [
 
-        'client' => 'predis',
+        'cluster' => 'predis',
 
         'default' => [
-            'host' => env('REDIS_HOST', '127.0.0.1'),
-            'password' => env('REDIS_PASSWORD', null),
-            'port' => env('REDIS_PORT', 6379),
-            'database' => 0,
+            'tcp://192.168.33.14:26379?timeout=0.100',
+            'tcp://192.168.33.15:26379?timeout=0.100',
+            'tcp://192.168.33.16:26379?timeout=0.100',
+            'options' => [
+                'replication' => 'sentinel',
+                'service' => env('REDIS_SENTINEL_SERVICE', 'mymaster'),
+                'parameters' => [
+                    'password' => env('REDIS_PASSWORD', null),
+                    'database' => 0,
+                ],
+            ],
         ],
 
     ],

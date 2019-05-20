@@ -4,20 +4,27 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class BlogController extends Controller
 {
     public function index(Request $request)
     {
+        // if(!$request->search && !Cache::get('new-post') && $posts = Cache::get('posts.all')){
+        //     // dd($posts);
+        // }
+        // else{
+        Cache::put('new-post', 0);
         $posts = Post::when($request->search, function($query) use($request) {
                         $search = $request->search;
-                        
+
                         return $query->where('title', 'like', "%$search%")
                             ->orWhere('body', 'like', "%$search%");
                     })->with('tags', 'category', 'user')
                     ->withCount('comments')
                     ->published()
                     ->simplePaginate(5);
+        // }
 
         return view('frontend.index', compact('posts'));
     }
